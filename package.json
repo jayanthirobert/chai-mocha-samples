@@ -1,0 +1,20 @@
+{
+  "name": "hc-teaching-excercises",
+  "version": "1.0.0",
+  "description": "Some excercises that test technologies used at Holidaycheck",
+  "scripts": {
+    "test": "NODE_ENV=test mocha tdd --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "chai-string": "^1.1.6",
+    "chai-things": "^0.2.0",
+    "lodash": "^4.5.1",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0"
+  }
+}
