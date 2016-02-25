@@ -7,7 +7,6 @@ var _ = require('lodash'),
 chai.use(require('chai-string'));
 chai.use(require('chai-things'));
 chai.use(require('chai-as-promised'));
-chai.use(require('chai-catch-exception'));
 
 describe('A Holidaycheck employee using chai', function () {
   // This is an exam about how to assert stuff using chai
@@ -19,8 +18,7 @@ describe('A Holidaycheck employee using chai', function () {
     assert.isDefined(t);
     assert.isNotNull(t);
 
-    expect(t).to.not.be.a('undefined');
-    expect(t).to.not.be.a('null');
+    expect(t).to.exist;
 
     (t).should.not.be.a('undefined');
     (t).should.not.be.a('null');
@@ -46,6 +44,9 @@ describe('A Holidaycheck employee using chai', function () {
   it('should be able to assert objects', function () {
     var t = { some: { nested: { stuff: 15 } }, other: 'stuff' };
 
+    var a = true
+    expect(a).to.be.ok;
+
     // Assertion here -> for the other stuff property of t
     assert.propertyVal(t, 'other', 'stuff');
     expect(t).to.have.property('other', 'stuff');
@@ -58,11 +59,8 @@ describe('A Holidaycheck employee using chai', function () {
 
     // Assertion here -> t.some.nested.stuff > 12
     assert.deepProperty(t, 'some.nested.stuff');
-    expect(t).to.have.deep.property('some.nested.stuff');
-    (t).should.have.deep.property('some.nested.stuff');
-
-    const result = t.some.nested.stuff;
-    assert.isAbove(result, 12);
+    expect(t).to.have.deep.property('some.nested.stuff').to.be.above(12);
+    (t).should.have.deep.property('some.nested.stuff').to.be.above(12);
 
     // Assertion here -> Structure of the object in some.nested
     assert.deepProperty(t, 'some.nested');
@@ -76,14 +74,14 @@ describe('A Holidaycheck employee using chai', function () {
     // Assertion here -> t length
     const count = t.length;
 
-    assert.isOk(count);
-    expect(count).to.be.ok;
-    (count).should.be.ok;
-
-    // Assertion here -> t always contains 2
     assert.lengthOf(t, 2);
     expect(t).to.have.length(2);
     (t).should.have.length(2);
+
+    // Assertion here -> t always contains 2
+    expect(t).to.contain(2);
+    (t).should.contain(2);
+    assert.include(t, 2);
   });
 
 
@@ -101,14 +99,12 @@ describe('A Holidaycheck employee using chai', function () {
     (errorThrowingAdd(2, 2)).should.equal(4);
 
     // Assertion here -> Assert that it throws an error when one or both arguments are missing
-    expect(errorThrowingAdd).withParams([1,'']).to.throw(Error, 'Some error with undefined');
-    expect(errorThrowingAdd).withParams(['','']).to.throw(Error, 'Some error with undefined');
-    expect(errorThrowingAdd).withParams([]).to.throw(Error, 'Some error with undefined');
+    expect(errorThrowingAdd.bind(null, 4, null)).to.throw(Error, 'Some error with null');
+    expect(errorThrowingAdd.bind(null, null, null)).to.throw(Error, 'Some error with null');
 
     // Assertion here -> Assert that it throws for non-number arguments
-    expect(errorThrowingAdd).withParams(['sdfdsf','sd']).to.throw(Error, 'Some error with undefined');
-    expect(errorThrowingAdd).withParams([1,'dwew']).to.throw(Error, 'Some error with undefined');
-    expect(errorThrowingAdd).withParams(['cefe', 2]).to.throw(Error, 'Some error with undefined');
+    expect(errorThrowingAdd.bind(null, 'dff', 'dfd')).to.throw(Error, 'Some error with dfd');
+    expect(errorThrowingAdd.bind(null, 5, '43f!')).to.throw(Error, 'Some error with 43f!');
   });
 
   it('should be able to assert strings', function () {
@@ -126,7 +122,7 @@ describe('A Holidaycheck employee using chai', function () {
 
     // Assertion here -> somewhere in t the string aaa exists
     assert.entriesCount(str, 'aaa', 1);
-    expect(str).to.have.entriesCount('aaa', 1);
+    expect(str).to.contain('aaa', 1);
     (str).should.have.entriesCount('aaa', 1);
   });
 
@@ -145,6 +141,8 @@ describe('A Holidaycheck employee using chai', function () {
     (thingsA).should.include.one.above(-4);
 
     // Assertion here -> thingsA should only contain numbers
+    //expect(thingsA).should.all.be.a('array');
+
     assert.typeOf(thingsA[0], 'number');
     assert.typeOf(thingsA[1], 'number');
     assert.typeOf(thingsA[2], 'number');
@@ -169,7 +167,7 @@ describe('A Holidaycheck employee using chai', function () {
     // Question: Why do we need Promise.all here to do multiple assertions?
     return Promise.all([
       // Assertion here -> resolvingPromise should be resolved
-      resolvingPromise.should.be.fulfilled,
+      resolvingPromise.should.be.fullfilled,
 
       // Assertion here -> rejectingPromise should be rejected with correct error
       rejectingPromise.should.be.rejectedWith(Error),
@@ -178,7 +176,7 @@ describe('A Holidaycheck employee using chai', function () {
       resolvingPromise.should.eventually.deep.equal({ some: { deep: 'object' } }),
 
       // Assertion here -> resolvingPromises result should have property some.deep that is a string
-      resolvingPromise.should.eventually.deep.property('some.deep')
+      resolvingPromise.should.eventually.deep.property('some.deep').that.is.a('string')
     ]);
   });
 });
